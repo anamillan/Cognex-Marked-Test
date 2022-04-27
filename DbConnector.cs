@@ -60,12 +60,18 @@ namespace DisplayControl
         public string failValue;
         public string result;
         public string sum;
-        public Result(string _passValue, string _failValue, string _result, string _sum)
+        public string secuencia_superior;
+        public string secuencia_inferior;
+        public string secuencia_lateral;
+        public Result(string _passValue, string _failValue, string _result, string _sum, string _superiorValue, string _inferiorValue, string _lateralValue)
         {
             this.passValue = _passValue;
             this.failValue = _failValue;
             this.result = _result;
             this.sum = _sum;
+            this.secuencia_superior = _superiorValue;
+            this.secuencia_inferior = _inferiorValue;
+            this.secuencia_lateral = _lateralValue;
         }
     }
 }

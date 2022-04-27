@@ -7,6 +7,10 @@ using System.Windows.Forms;
 using Cognex.InSight;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace DisplayControl
 {
@@ -308,7 +312,8 @@ namespace DisplayControl
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(111, 21);
             this.label5.TabIndex = 27;
-            this.label5.Text = "StreamCamera";
+            //this.label5.Text = "StreamCamera";
+
             // 
             // CvsInSightDisplay2
             // 
@@ -785,6 +790,29 @@ namespace DisplayControl
      
         }
 
+        //////////Escribir los resultados en csv////////////////////////////////////
+        
+        public static void addRecord(string sup, string inf, string lat, string filepath)
+        {
+            try
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@filepath, true))
+                {
+                    DateTime thisDay = DateTime.Today;
+                    string datetime = DateTime.Now.ToString("HH:mm:ss");
+                    file.WriteLine("800;032-ULP;L1;P1;"+ thisDay.ToString("d") + ";"+datetime +";"+sup + ";" + inf + ";" + lat) ;
+                }
+            
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("This program did an oopsie :", ex);
+            }
+        }
+
+
+
+
         ////////////////////////Updates the text of the status bar based on the changed state of the display control////////////////////////
         private void UpdateStateMsg()
         {
@@ -1152,8 +1180,10 @@ namespace DisplayControl
                 lbPass.Text    = result1.passValue;
                 //lbSum.Text     = result1.sum;
                 Console.WriteLine(result1.result);
+                addRecord(result1.secuencia_superior, result1.secuencia_inferior, result1.secuencia_lateral, "RESULTADOS.csv");
                 checkStt(result1.result);
                 saveFile();
+                
             }
 
             else
@@ -1173,8 +1203,12 @@ namespace DisplayControl
             string fail  =  CvsInSightDisplay2.Results.Cells.GetCell(5, 19).ToString();
             string value =  CvsInSightDisplay2.Results.Cells.GetCell(1, 18).ToString();
             string sum   =  CvsInSightDisplay2.Results.Cells.GetCell(5, 22).ToString();
+            string secuencia_superior =  CvsInSightDisplay2.Results.Cells.GetCell(147, 3).ToString();
+            string secuencia_inferior =  CvsInSightDisplay2.Results.Cells.GetCell(44, 12).ToString();
+            string secuencia_lateral =  CvsInSightDisplay2.Results.Cells.GetCell(165, 12).ToString();
+
            
-            return new Result(pass, fail, value, sum);
+            return new Result(pass, fail, value, sum, secuencia_superior, secuencia_inferior, secuencia_lateral);
         } 
 
         private void lkBtnConnect_Click(object sender, EventArgs e)
@@ -1254,7 +1288,11 @@ namespace DisplayControl
         private void button2_Click(object sender, EventArgs e)
         {
              CvsInSightDisplay2.Edit.OpenImageFromFile(jobPath);
-        }
+             Console.WriteLine("Hola Mundo Desde C# Consola"); //Escritura nueva Linea
+             Console.Write("Hola Mundo Sobre Linea");//Escritura en la linea
+             Console.Write(" | Prueba Linea");
+             
+            }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -1288,4 +1326,5 @@ namespace DisplayControl
         }
     }
     #endregion
+    
 }
